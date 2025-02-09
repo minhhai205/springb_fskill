@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import vn.minhhai.springb_fskill.util.PhoneNumber;
 
 public class UserRequestDTO implements Serializable {
     @NotBlank(message = "firstName must be not blank") // Khong cho phep gia tri blank
@@ -22,7 +22,8 @@ public class UserRequestDTO implements Serializable {
     @Email(message = "email invalid format") // Chi chap nhan nhung gia tri dung dinh dang email
     private String email;
 
-    @Pattern(regexp = "^\\d{10}$", message = "phone invalid format")
+    // @Pattern(regexp = "^\\d{10}$", message = "phone invalid format")
+    @PhoneNumber
     private String phone;
 
     @NotNull(message = "dateOfBirth must be not null")
