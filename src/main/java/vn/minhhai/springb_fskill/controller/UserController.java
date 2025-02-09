@@ -2,6 +2,7 @@ package vn.minhhai.springb_fskill.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 public class UserController {
 
     @PostMapping("/user/create")
-    public String addUser(@RequestBody UserRequestDTO userDTO) {
+    public String addUser(@Valid @RequestBody UserRequestDTO userDTO) {
         return "entity";
     }
 
