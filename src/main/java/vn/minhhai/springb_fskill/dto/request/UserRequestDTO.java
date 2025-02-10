@@ -11,10 +11,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import vn.minhhai.springb_fskill.util.EnumPattern;
+import vn.minhhai.springb_fskill.util.EnumValue;
 import vn.minhhai.springb_fskill.util.Gender;
 import vn.minhhai.springb_fskill.util.GenderSubset;
 import vn.minhhai.springb_fskill.util.PhoneNumber;
 import vn.minhhai.springb_fskill.util.UserStatus;
+import vn.minhhai.springb_fskill.util.UserType;
 
 import static vn.minhhai.springb_fskill.util.Gender.*;
 
@@ -39,6 +41,10 @@ public class UserRequestDTO implements Serializable {
 
     @GenderSubset(anyOf = { MALE, FEMALE })
     private Gender gender;
+
+    @NotNull(message = "type must be not null")
+    @EnumValue(name = "type", enumClass = UserType.class)
+    private String type;
 
     @EnumPattern(name = "status", regexp = "ACTIVE|INACTIVE|NONE")
     private UserStatus status;
@@ -76,6 +82,14 @@ public class UserRequestDTO implements Serializable {
 
     public Gender getGender() {
         return gender;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public void setFirstName(String firstName) {
