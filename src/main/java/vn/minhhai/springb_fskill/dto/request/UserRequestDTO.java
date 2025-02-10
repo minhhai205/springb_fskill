@@ -10,8 +10,9 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import vn.minhhai.springb_fskill.util.EnumPattern;
 import vn.minhhai.springb_fskill.util.PhoneNumber;
+import vn.minhhai.springb_fskill.util.UserStatus;
 
 public class UserRequestDTO implements Serializable {
     @NotBlank(message = "firstName must be not blank") // Khong cho phep gia tri blank
@@ -32,8 +33,8 @@ public class UserRequestDTO implements Serializable {
     @JsonFormat(pattern = "MM/dd/yyyy")
     private Date dateOfBirth;
 
-    @Pattern(regexp = "^ACTIVE|INACTIVE|NONE$", message = "status must be one in {ACTIVE, INACTIVE, NONE}")
-    private String status;
+    @EnumPattern(name = "status", regexp = "ACTIVE|INACTIVE|NONE")
+    private UserStatus status;
 
     public UserRequestDTO(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
@@ -62,7 +63,7 @@ public class UserRequestDTO implements Serializable {
         return dateOfBirth;
     }
 
-    public String getStatus() {
+    public UserStatus getStatus() {
         return status;
     }
 
@@ -86,7 +87,7 @@ public class UserRequestDTO implements Serializable {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(UserStatus status) {
         this.status = status;
     }
 
