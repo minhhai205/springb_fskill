@@ -11,8 +11,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import vn.minhhai.springb_fskill.util.EnumPattern;
+import vn.minhhai.springb_fskill.util.Gender;
+import vn.minhhai.springb_fskill.util.GenderSubset;
 import vn.minhhai.springb_fskill.util.PhoneNumber;
 import vn.minhhai.springb_fskill.util.UserStatus;
+
+import static vn.minhhai.springb_fskill.util.Gender.*;
 
 public class UserRequestDTO implements Serializable {
     @NotBlank(message = "firstName must be not blank") // Khong cho phep gia tri blank
@@ -32,6 +36,9 @@ public class UserRequestDTO implements Serializable {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "MM/dd/yyyy")
     private Date dateOfBirth;
+
+    @GenderSubset(anyOf = { MALE, FEMALE })
+    private Gender gender;
 
     @EnumPattern(name = "status", regexp = "ACTIVE|INACTIVE|NONE")
     private UserStatus status;
@@ -67,6 +74,10 @@ public class UserRequestDTO implements Serializable {
         return status;
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -89,6 +100,10 @@ public class UserRequestDTO implements Serializable {
 
     public void setStatus(UserStatus status) {
         this.status = status;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
     }
 
     @Override
