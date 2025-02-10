@@ -10,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import vn.minhhai.springb_fskill.util.PhoneNumber;
 
 public class UserRequestDTO implements Serializable {
@@ -30,6 +31,9 @@ public class UserRequestDTO implements Serializable {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "MM/dd/yyyy")
     private Date dateOfBirth;
+
+    @Pattern(regexp = "^ACTIVE|INACTIVE|NONE$", message = "status must be one in {ACTIVE, INACTIVE, NONE}")
+    private String status;
 
     public UserRequestDTO(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;
@@ -58,6 +62,10 @@ public class UserRequestDTO implements Serializable {
         return dateOfBirth;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -76,6 +84,10 @@ public class UserRequestDTO implements Serializable {
 
     public void setDateOfBirth(Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
