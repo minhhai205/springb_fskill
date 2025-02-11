@@ -53,16 +53,16 @@ public class UserController {
     @GetMapping("user/{id}")
     public ResponseData<UserRequestDTO> getUser(
             @PathVariable @Min(value = 1, message = "userId must be greater than 0") int id) {
-        return new ResponseData<>(HttpStatus.OK.value(), "User deleted",
+        return new ResponseData<>(HttpStatus.OK.value(), "Get user successed",
                 new UserRequestDTO("Minh", "Hai", "admin@gmail.vn", "0123456789"));
     }
 
     @GetMapping("/user") // defaultValue : tham số mặc định
     public ResponseData<List<UserRequestDTO>> getUsers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int limit) {
+            @Min(value = 1, message = "page must be greater than or equal to 1") @RequestParam(defaultValue = "1", required = false) int page,
+            @Min(value = 10, message = "limit must be greater than or equal to 10") @RequestParam(defaultValue = "10", required = false) int limit) {
 
-        return new ResponseData<>(HttpStatus.OK.value(), "User deleted",
+        return new ResponseData<>(HttpStatus.OK.value(), "Get user successed",
                 List.of(
                         new UserRequestDTO("user", "1", "user1@example.com", "12345"),
                         new UserRequestDTO("user", "1", "user2@example.com", "12345")));
