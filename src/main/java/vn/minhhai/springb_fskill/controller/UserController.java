@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.ResponseData;
 import vn.minhhai.springb_fskill.dto.response.ResponseError;
+import vn.minhhai.springb_fskill.service.UserService;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,10 +26,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @Validated
 public class UserController {
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/user/create")
     public ResponseData<Integer> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
-        return new ResponseData<>(HttpStatus.CREATED.value(), "Add successFully", 1);
+        try {
+            userService.addUser(userDTO);
+            return new ResponseData<>(HttpStatus.CREATED.value(), "Add successFully", 1);
+        } catch (Exception e) {
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
     }
 
     @PutMapping("user/{id}")
