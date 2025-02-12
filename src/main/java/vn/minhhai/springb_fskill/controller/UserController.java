@@ -29,6 +29,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @SuppressWarnings("unchecked")
     @PostMapping("/user/create")
     public ResponseData<Integer> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
         try {
