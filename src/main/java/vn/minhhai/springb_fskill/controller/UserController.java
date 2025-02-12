@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import vn.minhhai.springb_fskill.config.Translator;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.ResponseData;
 import vn.minhhai.springb_fskill.dto.response.ResponseError;
@@ -34,7 +35,7 @@ public class UserController {
     public ResponseData<Integer> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
         try {
             userService.addUser(userDTO);
-            return new ResponseData<>(HttpStatus.CREATED.value(), "Add successFully", 1);
+            return new ResponseData<>(HttpStatus.CREATED.value(), Translator.toLocale("user.add.success"), 1);
         } catch (Exception e) {
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
