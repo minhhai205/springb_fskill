@@ -2,6 +2,8 @@ package vn.minhhai.springb_fskill.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import vn.minhhai.springb_fskill.config.Translator;
@@ -26,12 +28,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 @RestController
 @Validated
+@Tag(name = "User Controller") // Đổi tên hiển thị
 public class UserController {
     @Autowired
     private UserService userService;
 
     @SuppressWarnings("unchecked")
     @PostMapping("/user/create")
+    // Ctrl Click để xem các mô tả khác có thể viết
+    @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
     public ResponseData<Integer> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
         try {
             userService.addUser(userDTO);
@@ -42,12 +47,14 @@ public class UserController {
     }
 
     @PutMapping("user/{id}")
+    @Operation(summary = "Update user", description = "Send a request via this API to update user")
     public ResponseData<?> updateUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int id,
             @RequestBody UserRequestDTO userDTO) {
         return new ResponseData<>(HttpStatus.ACCEPTED.value(), "Updated successFully");
     }
 
     @PatchMapping("user/{id}") // required : tham số không bắt buộc
+    @Operation(summary = "Change status of user", description = "Send a request via this API to change status of user")
     public ResponseData<?> changeUserStatus(
             @PathVariable @Min(value = 1, message = "userId must be greater than 0") int id,
             @RequestParam(required = false) boolean status) {
@@ -57,11 +64,13 @@ public class UserController {
     }
 
     @DeleteMapping("user/delete/{id}")
+    @Operation(summary = "Delete user permanently", description = "Send a request via this API to delete user permanently")
     public ResponseData<?> deleteUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int id) {
         return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted");
     }
 
-    @GetMapping("user/{id}")
+    @GetMapping("user/detail/{id}")
+    @Operation(summary = "Get user detail", description = "Send a request via this API to get user information")
     public ResponseData<UserRequestDTO> getUser(
             @PathVariable @Min(value = 1, message = "userId must be greater than 0") int id) {
         return new ResponseData<>(HttpStatus.OK.value(), "Get user successed",
@@ -69,6 +78,7 @@ public class UserController {
     }
 
     @GetMapping("/user") // defaultValue : tham số mặc định
+    @Operation(summary = "Get list of users per pageNo", description = "Send a request via this API to get user list by pageNo and pageSize")
     public ResponseData<List<UserRequestDTO>> getUsers(
             @Min(value = 1, message = "page must be greater than or equal to 1") @RequestParam(defaultValue = "1", required = false) int page,
             @Min(value = 10, message = "limit must be greater than or equal to 10") @RequestParam(defaultValue = "10", required = false) int limit) {
