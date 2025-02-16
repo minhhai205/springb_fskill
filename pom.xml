@@ -71,9 +71,9 @@
 	<profiles>
 		<profile>
 			<id>dev</id>
-			<!-- <activation>
+			<activation>
 				<activeByDefault>true</activeByDefault>
-			</activation> -->
+			</activation>
 			<properties>
 				<spring.profiles.active>dev</spring.profiles.active>
 			</properties>
