@@ -2,6 +2,7 @@ package vn.minhhai.springb_fskill.dto.request;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import vn.minhhai.springb_fskill.util.EnumPattern;
 import vn.minhhai.springb_fskill.util.EnumValue;
@@ -48,6 +50,39 @@ public class UserRequestDTO implements Serializable {
 
     @EnumPattern(name = "status", regexp = "ACTIVE|INACTIVE|NONE")
     private UserStatus status;
+
+    @NotEmpty(message = "addresses can not empty")
+    private Set<AddressDTO> addresses;
+
+    @NotNull(message = "username must be not null")
+    private String username;
+
+    @NotNull(message = "password must be not null")
+    private String password;
+    
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Set<AddressDTO> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(Set<AddressDTO> addresses) {
+        this.addresses = addresses;
+    }
 
     public UserRequestDTO(String firstName, String lastName, String email, String phone) {
         this.firstName = firstName;

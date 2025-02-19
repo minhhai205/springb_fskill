@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import vn.minhhai.springb_fskill.config.Translator;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.ResponseData;
@@ -17,8 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,18 +28,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 @Validated
 @Tag(name = "User Controller") // Đổi tên hiển thị
+@RequiredArgsConstructor
 public class UserController {
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
     @SuppressWarnings("unchecked")
     @PostMapping("/user/create")
     // Ctrl Click để xem các mô tả khác có thể viết
     @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
-    public ResponseData<Integer> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
+    public ResponseData<Long> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
         try {
-            userService.addUser(userDTO);
-            return new ResponseData<>(HttpStatus.CREATED.value(), Translator.toLocale("user.add.success"), 1);
+            long userId = userService.saveUser(userDTO);
+            return new ResponseData<>(HttpStatus.CREATED.value(), Translator.toLocale("user.add.success"), userId);
         } catch (Exception e) {
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }

@@ -1,7 +1,22 @@
 package vn.minhhai.springb_fskill.service;
 
+import java.util.List;
+
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
+import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
+import vn.minhhai.springb_fskill.util.UserStatus;
 
 public interface UserService {
-    int addUser(UserRequestDTO user);
+
+    long saveUser(UserRequestDTO request);
+
+    void updateUser(long userId, UserRequestDTO request);
+
+    void changeStatus(long userId, UserStatus status);
+
+    void deleteUser(long userId);
+
+    UserDetailResponse getUser(long userId);
+
+    List<UserDetailResponse> getAllUsers(int pageNo, int pageSize);
 }
