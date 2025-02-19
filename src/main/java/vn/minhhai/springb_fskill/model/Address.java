@@ -39,4 +39,3 @@ public class Address extends AbstractEntity {
     @Column(name = "address_type")
     private Integer addressType;
 }
-

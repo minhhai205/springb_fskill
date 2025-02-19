@@ -10,7 +10,8 @@ import java.util.Date;
 
 @Getter
 @Setter
-@MappedSuperclass // Đánh dấu một lớp cha không được ánh xạ thành bảng, các lớp con sẽ kế thừa các cột của nó.
+@MappedSuperclass // Đánh dấu một lớp cha không được ánh xạ thành bảng,
+                  // các lớp con sẽ kế thừa các cột của nó.
 public abstract class AbstractEntity {
 
     @Id
@@ -28,4 +29,3 @@ public abstract class AbstractEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt;
 }
-

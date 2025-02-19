@@ -59,7 +59,7 @@ public class UserRequestDTO implements Serializable {
 
     @NotNull(message = "password must be not null")
     private String password;
-    
+
     public String getUsername() {
         return username;
     }

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import vn.minhhai.springb_fskill.config.Translator;
 import vn.minhhai.springb_fskill.dto.request.AddressDTO;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
@@ -26,7 +25,7 @@ import vn.minhhai.springb_fskill.util.UserType;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
-     /**
+    /**
      * Save new user to DB
      *
      * @param request
@@ -47,19 +46,19 @@ public class UserServiceImpl implements UserService {
                 .type(UserType.valueOf(request.getType().toUpperCase()))
                 .build();
 
-        // Thêm address cho user và gán lại user vào address để tự động lưu address khi lưu user
+        // Thêm address cho user và gán lại user vào address để tự động lưu address khi
+        // lưu user
         // dựa vào cấu hình cascade = CascadeType.ALL
-        request.getAddresses().forEach(a ->
-                user.saveAddress(Address.builder()
-                        .apartmentNumber(a.getApartmentNumber())
-                        .floor(a.getFloor())
-                        .building(a.getBuilding())
-                        .streetNumber(a.getStreetNumber())
-                        .street(a.getStreet())
-                        .city(a.getCity())
-                        .country(a.getCountry())
-                        .addressType(a.getAddressType())
-                        .build()));
+        request.getAddresses().forEach(a -> user.saveAddress(Address.builder()
+                .apartmentNumber(a.getApartmentNumber())
+                .floor(a.getFloor())
+                .building(a.getBuilding())
+                .streetNumber(a.getStreetNumber())
+                .street(a.getStreet())
+                .city(a.getCity())
+                .country(a.getCountry())
+                .addressType(a.getAddressType())
+                .build()));
         userRepository.save(user);
 
         log.info("User has added successfully, userId={}", user.getId());
@@ -78,7 +77,8 @@ public class UserServiceImpl implements UserService {
         user.setGender(request.getGender());
         user.setPhone(request.getPhone());
         if (!request.getEmail().equals(user.getEmail())) {
-            // check email from database if not exist then allow update email otherwise throw exception
+            // check email from database if not exist then allow update email otherwise
+            // throw exception
             user.setEmail(request.getEmail());
         }
         user.setUsername(request.getUsername());
@@ -108,13 +108,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailResponse getUser(long userId) {
-      
+
         throw new UnsupportedOperationException("Unimplemented method 'getUser'");
     }
 
     @Override
     public List<UserDetailResponse> getAllUsers(int pageNo, int pageSize) {
-       
+
         throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
     }
 
@@ -122,20 +122,18 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found!"));
     }
 
-     private Set<Address> convertToAddress(Set<AddressDTO> addresses) {
+    private Set<Address> convertToAddress(Set<AddressDTO> addresses) {
         Set<Address> result = new HashSet<>();
-        addresses.forEach(a ->
-                result.add(Address.builder()
-                        .apartmentNumber(a.getApartmentNumber())
-                        .floor(a.getFloor())
-                        .building(a.getBuilding())
-                        .streetNumber(a.getStreetNumber())
-                        .street(a.getStreet())
-                        .city(a.getCity())
-                        .country(a.getCountry())
-                        .addressType(a.getAddressType())
-                        .build())
-        );
+        addresses.forEach(a -> result.add(Address.builder()
+                .apartmentNumber(a.getApartmentNumber())
+                .floor(a.getFloor())
+                .building(a.getBuilding())
+                .streetNumber(a.getStreetNumber())
+                .street(a.getStreet())
+                .city(a.getCity())
+                .country(a.getCountry())
+                .addressType(a.getAddressType())
+                .build()));
         return result;
     }
 
