@@ -7,11 +7,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import vn.minhhai.springb_fskill.config.Translator;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.ResponseData;
 import vn.minhhai.springb_fskill.dto.response.ResponseError;
 import vn.minhhai.springb_fskill.service.UserService;
+import vn.minhhai.springb_fskill.util.UserStatus;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +31,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @Validated
 @Tag(name = "User Controller") // Đổi tên hiển thị
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
@@ -47,25 +50,48 @@ public class UserController {
 
     @PutMapping("user/{id}")
     @Operation(summary = "Update user", description = "Send a request via this API to update user")
-    public ResponseData<?> updateUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int id,
+    public ResponseData<?> updateUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") long id,
             @RequestBody UserRequestDTO userDTO) {
-        return new ResponseData<>(HttpStatus.ACCEPTED.value(), "Updated successFully");
+        log.info("Request update userId={}", id);
+
+        try {
+            userService.updateUser(id, userDTO);
+            return new ResponseData<>(HttpStatus.ACCEPTED.value(), Translator.toLocale("user.upd.success"));
+        } catch (Exception e) {
+            log.error("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage() + " Update user fail");
+        }
     }
 
     @PatchMapping("user/{id}") // required : tham số không bắt buộc
     @Operation(summary = "Change status of user", description = "Send a request via this API to change status of user")
     public ResponseData<?> changeUserStatus(
-            @PathVariable @Min(value = 1, message = "userId must be greater than 0") int id,
-            @RequestParam(required = false) boolean status) {
-        // return new ResponseData<>(HttpStatus.ACCEPTED.value(), "User Status
-        // changed");
-        return new ResponseError(HttpStatus.BAD_REQUEST.value(), "Change Status failed");
+            @PathVariable @Min(value = 1, message = "userId must be greater than 0") long id,
+            @RequestParam UserStatus status) {
+        log.info("Request change status, userId={}", id);
+
+        try {
+            userService.changeStatus(id, status);
+            return new ResponseData<>(HttpStatus.ACCEPTED.value(), Translator.toLocale("user.change.success"));
+        } catch (Exception e) {
+            log.error("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage() + " Change status fail");
+        }
     }
 
     @DeleteMapping("user/delete/{id}")
     @Operation(summary = "Delete user permanently", description = "Send a request via this API to delete user permanently")
-    public ResponseData<?> deleteUser(@PathVariable @Min(value = 1, message = "userId must be greater than 0") int id) {
-        return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "User deleted");
+    public ResponseData<?> deleteUser(
+            @PathVariable @Min(value = 1, message = "userId must be greater than 0") long id) {
+        log.info("Request delete userId={}", id);
+
+        try {
+            userService.deleteUser(id);
+            return new ResponseData<>(HttpStatus.NO_CONTENT.value(), Translator.toLocale("user.del.success"));
+        } catch (Exception e) {
+            log.error("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage() + " Delete user fail");
+        }
     }
 
     @GetMapping("user/detail/{id}")

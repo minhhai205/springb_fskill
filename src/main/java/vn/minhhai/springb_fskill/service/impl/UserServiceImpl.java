@@ -1,12 +1,18 @@
 package vn.minhhai.springb_fskill.service.impl;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import vn.minhhai.springb_fskill.config.Translator;
+import vn.minhhai.springb_fskill.dto.request.AddressDTO;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
+import vn.minhhai.springb_fskill.exception.ResourceNotFoundException;
 import vn.minhhai.springb_fskill.model.Address;
 import vn.minhhai.springb_fskill.model.User;
 import vn.minhhai.springb_fskill.repository.UserRepository;
@@ -33,7 +39,7 @@ public class UserServiceImpl implements UserService {
                 .lastName(request.getLastName())
                 .dateOfBirth(request.getDateOfBirth())
                 .gender(request.getGender())
-                // .phone(request.getPhone())
+                .phone(request.getPhone())
                 .email(request.getEmail())
                 .username(request.getUsername())
                 .password(request.getPassword())
@@ -63,20 +69,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(long userId, UserRequestDTO request) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'updateUser'");
+        // Chú ý với nghiệp vụ từng dụ án để check chi tiết và xác thực các trường
+        // như username, email kh đc trùng, gửi sms xác thực sđt, ...
+        User user = getUserById(userId);
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setDateOfBirth(request.getDateOfBirth());
+        user.setGender(request.getGender());
+        user.setPhone(request.getPhone());
+        if (!request.getEmail().equals(user.getEmail())) {
+            // check email from database if not exist then allow update email otherwise throw exception
+            user.setEmail(request.getEmail());
+        }
+        user.setUsername(request.getUsername());
+        user.setPassword(request.getPassword());
+        user.setStatus(request.getStatus());
+        user.setType(UserType.valueOf(request.getType().toUpperCase()));
+        user.setAddresses(convertToAddress(request.getAddresses()));
+        userRepository.save(user);
+
+        log.info("User has updated successfully, userId={}", userId);
     }
 
     @Override
     public void changeStatus(long userId, UserStatus status) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'changeStatus'");
+        User user = getUserById(userId);
+        user.setStatus(status);
+        userRepository.save(user);
+
+        log.info("User status has changed successfully, userId={}", userId);
     }
 
     @Override
     public void deleteUser(long userId) {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'deleteUser'");
+        userRepository.deleteById(userId);
+        log.info("User has deleted permanent successfully, userId={}", userId);
     }
 
     @Override
@@ -89,6 +116,27 @@ public class UserServiceImpl implements UserService {
     public List<UserDetailResponse> getAllUsers(int pageNo, int pageSize) {
        
         throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
+    }
+
+    private User getUserById(long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found!"));
+    }
+
+     private Set<Address> convertToAddress(Set<AddressDTO> addresses) {
+        Set<Address> result = new HashSet<>();
+        addresses.forEach(a ->
+                result.add(Address.builder()
+                        .apartmentNumber(a.getApartmentNumber())
+                        .floor(a.getFloor())
+                        .building(a.getBuilding())
+                        .streetNumber(a.getStreetNumber())
+                        .street(a.getStreet())
+                        .city(a.getCity())
+                        .country(a.getCountry())
+                        .addressType(a.getAddressType())
+                        .build())
+        );
+        return result;
     }
 
 }
