@@ -40,6 +40,8 @@ public class UserController {
     // Ctrl Click để xem các mô tả khác có thể viết
     @Operation(method = "POST", summary = "Add new user", description = "Send a request via this API to create new user")
     public ResponseData<Long> addUser(@Valid @RequestBody UserRequestDTO userDTO) {
+        // bắt ngoại lệ custom như ResourceNotFoundException trong hàm getUserById file
+        // userServiceIpl hoặc ngoại lệ lưu database
         try {
             long userId = userService.saveUser(userDTO);
             return new ResponseData<>(HttpStatus.CREATED.value(), Translator.toLocale("user.add.success"), userId);
@@ -54,6 +56,8 @@ public class UserController {
             @RequestBody UserRequestDTO userDTO) {
         log.info("Request update userId={}", id);
 
+        // bắt ngoại lệ custom như ResourceNotFoundException trong hàm getUserById file
+        // userServiceIpl hoặc ngoại lệ lưu database
         try {
             userService.updateUser(id, userDTO);
             return new ResponseData<>(HttpStatus.ACCEPTED.value(), Translator.toLocale("user.upd.success"));
@@ -70,6 +74,8 @@ public class UserController {
             @RequestParam UserStatus status) {
         log.info("Request change status, userId={}", id);
 
+        // bắt ngoại lệ custom như ResourceNotFoundException trong hàm getUserById file
+        // userServiceIpl hoặc ngoại lệ lưu database
         try {
             userService.changeStatus(id, status);
             return new ResponseData<>(HttpStatus.ACCEPTED.value(), Translator.toLocale("user.change.success"));
@@ -85,6 +91,8 @@ public class UserController {
             @PathVariable @Min(value = 1, message = "userId must be greater than 0") long id) {
         log.info("Request delete userId={}", id);
 
+        // bắt ngoại lệ custom như ResourceNotFoundException trong hàm getUserById file
+        // userServiceIpl hoặc ngoại lệ lưu database
         try {
             userService.deleteUser(id);
             return new ResponseData<>(HttpStatus.NO_CONTENT.value(), Translator.toLocale("user.del.success"));
