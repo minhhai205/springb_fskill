@@ -12,6 +12,7 @@ import vn.minhhai.springb_fskill.config.Translator;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.ResponseData;
 import vn.minhhai.springb_fskill.dto.response.ResponseError;
+import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
 import vn.minhhai.springb_fskill.service.UserService;
 import vn.minhhai.springb_fskill.util.UserStatus;
 
@@ -19,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
-import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -102,24 +102,36 @@ public class UserController {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @GetMapping("user/detail/{id}")
     @Operation(summary = "Get user detail", description = "Send a request via this API to get user information")
-    public ResponseData<UserRequestDTO> getUser(
-            @PathVariable @Min(value = 1, message = "userId must be greater than 0") int id) {
-        return new ResponseData<>(HttpStatus.OK.value(), "Get user successed",
-                new UserRequestDTO("Minh", "Hai", "admin@gmail.vn", "0123456789"));
+    public ResponseData<UserDetailResponse> getUser(
+            @PathVariable @Min(value = 1, message = "userId must be greater than 0") long id) {
+        log.info("Request get user detail, userId={}", id);
+
+        try {
+            UserDetailResponse user = userService.getUser(id);
+            return new ResponseData<>(HttpStatus.OK.value(), "data user", user);
+        } catch (Exception e) {
+            log.error("errorMessage={}", e.getMessage(), e.getCause());
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
     }
 
     @GetMapping("/user") // defaultValue : tham số mặc định
     @Operation(summary = "Get list of users per pageNo", description = "Send a request via this API to get user list by pageNo and pageSize")
-    public ResponseData<List<UserRequestDTO>> getUsers(
-            @Min(value = 1, message = "page must be greater than or equal to 1") @RequestParam(defaultValue = "1", required = false) int page,
-            @Min(value = 10, message = "limit must be greater than or equal to 10") @RequestParam(defaultValue = "10", required = false) int limit) {
+    public ResponseData<?> getUsers(
+            @Min(value = 0, message = "page must be greater than or equal to 0") @RequestParam(defaultValue = "0", required = false) int pageNo,
+            @Min(value = 10, message = "limit must be greater than or equal to 10") @RequestParam(defaultValue = "10", required = false) int pageSize,
+            @RequestParam(required = false) String... sorts) {
 
-        return new ResponseData<>(HttpStatus.OK.value(), "Get user successed",
-                List.of(
-                        new UserRequestDTO("user", "1", "user1@example.com", "12345"),
-                        new UserRequestDTO("user", "1", "user2@example.com", "12345")));
+        try {
+            log.info("Request get all of users");
+            return new ResponseData<>(HttpStatus.OK.value(), "data users",
+                    userService.getAllUsers(pageNo, pageSize, sorts));
+        } catch (Exception e) {
+            return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
+        }
 
     }
 

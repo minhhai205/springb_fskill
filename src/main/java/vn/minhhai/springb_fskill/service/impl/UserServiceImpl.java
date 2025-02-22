@@ -1,15 +1,23 @@
 package vn.minhhai.springb_fskill.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.minhhai.springb_fskill.dto.request.AddressDTO;
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
+import vn.minhhai.springb_fskill.dto.response.PageResponse;
 import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
 import vn.minhhai.springb_fskill.exception.ResourceNotFoundException;
 import vn.minhhai.springb_fskill.model.Address;
@@ -108,14 +116,64 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetailResponse getUser(long userId) {
-
-        throw new UnsupportedOperationException("Unimplemented method 'getUser'");
+        User user = getUserById(userId);
+        return UserDetailResponse.builder()
+                .id(userId)
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .dateOfBirth(user.getDateOfBirth())
+                .gender(user.getGender())
+                .phone(user.getPhone())
+                .email(user.getEmail())
+                .username(user.getUsername())
+                .status(user.getStatus())
+                .type(user.getType().name())
+                .build();
     }
 
     @Override
-    public List<UserDetailResponse> getAllUsers(int pageNo, int pageSize) {
+    public PageResponse<?> getAllUsers(int pageNo, int pageSize, String... sorts) {
 
-        throw new UnsupportedOperationException("Unimplemented method 'getAllUsers'");
+        // Danh sách các tiêu chí sắp xếp
+        List<Sort.Order> orders = new ArrayList<>();
+
+        if (sorts != null) {
+            for (String sortBy : sorts) {
+                log.info("sortBy: {}", sortBy);
+
+                // Biểu thức chính quy để tách tên trường và hướng sắp xếp (asc/desc)
+                Pattern pattern = Pattern.compile("(\\w+?)(:)(.*)");
+                Matcher matcher = pattern.matcher(sortBy);
+
+                if (matcher.find()) {
+                    if (matcher.group(3).equalsIgnoreCase("desc")) {
+                        // Thêm hướng sắp xếp và tiêu chí cần sắp xếp vào danh sách cách tiêu trí sort
+                        orders.add(new Sort.Order(Sort.Direction.DESC, matcher.group(1)));
+                    } else {
+                        orders.add(new Sort.Order(Sort.Direction.ASC, matcher.group(1)));
+                    }
+                }
+            }
+        }
+
+        Pageable pageable = PageRequest.of(pageNo, pageSize, Sort.by(orders));
+
+        // Thực hiện truy vấn lấy danh sách người dùng từ cơ sở dữ liệu theo phân trang
+        Page<User> users = userRepository.findAll(pageable);
+
+        List<UserDetailResponse> response = users.stream().map(user -> UserDetailResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build()).toList();
+        return PageResponse.builder()
+                .pageNo(pageNo)
+                .pageSize(pageSize)
+                .totalPage(users.getTotalPages())
+                .items(response)
+                .build();
     }
 
     private User getUserById(long userId) {
