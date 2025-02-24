@@ -120,7 +120,7 @@ public class UserController {
 
     @GetMapping("/user") // defaultValue : tham số mặc định
     @Operation(summary = "Get list of users per pageNo", description = "Send a request via this API to get user list by pageNo and pageSize")
-    public ResponseData<?> getUsers(
+    public ResponseData<?> getAllUsersWithPagingAndSorting(
             @Min(value = 0, message = "page must be greater than or equal to 0") @RequestParam(defaultValue = "0", required = false) int pageNo,
             @Min(value = 10, message = "limit must be greater than or equal to 10") @RequestParam(defaultValue = "10", required = false) int pageSize,
             @RequestParam(required = false) String... sorts) {
@@ -133,6 +133,18 @@ public class UserController {
             return new ResponseError(HttpStatus.BAD_REQUEST.value(), e.getMessage());
         }
 
+    }
+
+    @Operation(summary = "Get list of users and search with paging and sorting by customize query", description = "Send a request via this API to get user list by pageNo, pageSize and sort by multiple column")
+    @GetMapping("/list-user-and-search-with-paging-and-sorting")
+    public ResponseData<?> getAllUsersAndSearchWithPagingAndSorting(
+            @RequestParam(defaultValue = "0", required = false) int pageNo,
+            @RequestParam(defaultValue = "20", required = false) int pageSize,
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String sortBy) {
+        log.info("Request get list of users and search with paging and sorting");
+        return new ResponseData<>(HttpStatus.OK.value(), "users",
+                userService.getAllUsersAndSearchWithPagingAndSorting(pageNo, pageSize, search, sortBy));
     }
 
 }

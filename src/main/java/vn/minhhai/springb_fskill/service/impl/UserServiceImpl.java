@@ -22,6 +22,7 @@ import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
 import vn.minhhai.springb_fskill.exception.ResourceNotFoundException;
 import vn.minhhai.springb_fskill.model.Address;
 import vn.minhhai.springb_fskill.model.User;
+import vn.minhhai.springb_fskill.repository.SearchRepository;
 import vn.minhhai.springb_fskill.repository.UserRepository;
 import vn.minhhai.springb_fskill.service.UserService;
 import vn.minhhai.springb_fskill.util.UserStatus;
@@ -32,6 +33,7 @@ import vn.minhhai.springb_fskill.util.UserType;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+    private final SearchRepository searchRepository;
 
     /**
      * Save new user to DB
@@ -127,7 +129,7 @@ public class UserServiceImpl implements UserService {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .status(user.getStatus())
-                .type(user.getType().name())
+                .type(user.getType())
                 .build();
     }
 
@@ -174,6 +176,12 @@ public class UserServiceImpl implements UserService {
                 .totalPage(users.getTotalPages())
                 .items(response)
                 .build();
+    }
+
+    @Override
+    public PageResponse<?> getAllUsersAndSearchWithPagingAndSorting(int pageNo, int pageSize, String search,
+            String sort) {
+        return searchRepository.searchUser(pageNo, pageSize, search, sort);
     }
 
     private User getUserById(long userId) {

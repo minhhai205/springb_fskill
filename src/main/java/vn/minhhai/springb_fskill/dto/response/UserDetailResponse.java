@@ -6,9 +6,11 @@ import java.util.Date;
 import lombok.*;
 import vn.minhhai.springb_fskill.util.Gender;
 import vn.minhhai.springb_fskill.util.UserStatus;
+import vn.minhhai.springb_fskill.util.UserType;
 
 @Builder
 @Getter
+@AllArgsConstructor
 public class UserDetailResponse implements Serializable {
     private Long id;
 
@@ -26,7 +28,7 @@ public class UserDetailResponse implements Serializable {
 
     private String username;
 
-    private String type;
+    private UserType type;
 
     private UserStatus status;
 }
