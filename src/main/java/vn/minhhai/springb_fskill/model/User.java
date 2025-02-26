@@ -9,6 +9,8 @@ import vn.minhhai.springb_fskill.util.UserType;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -60,6 +62,7 @@ public class User extends AbstractEntity {
     private UserStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonIgnore // Stop infinite loop
     private Set<Address> addresses = new HashSet<>();
 
     public void saveAddress(Address address) {
