@@ -3,6 +3,7 @@ package vn.minhhai.springb_fskill.service.impl;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,7 @@ import vn.minhhai.springb_fskill.model.Address;
 import vn.minhhai.springb_fskill.model.User;
 import vn.minhhai.springb_fskill.repository.SearchRepository;
 import vn.minhhai.springb_fskill.repository.UserRepository;
+import vn.minhhai.springb_fskill.repository.specification.UserSpecificationsBuilder;
 import vn.minhhai.springb_fskill.service.UserService;
 import vn.minhhai.springb_fskill.util.UserStatus;
 import vn.minhhai.springb_fskill.util.UserType;
@@ -190,6 +192,37 @@ public class UserServiceImpl implements UserService {
         return searchRepository.searchUserByCriteria(pageNo, pageSize, sortBy, address, search);
     }
 
+    @Override
+    public PageResponse<?> advanceSearchWithSpecifications(Pageable pageable, String[] user, String[] address) {
+        log.info("getUsersBySpecifications");
+
+        if (user != null && address != null) {
+            // return searchRepository.searchUserByCriteriaWithJoin(pageable, user,
+            // address);
+        } else if (user != null) {
+            UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
+
+            Pattern pattern = Pattern.compile("([']?)([\\w]+)([><:~!])(\\*?)([^*]+)(\\*?)");
+
+            for (String s : user) {
+                Matcher matcher = pattern.matcher(s);
+
+                if (matcher.find()) {
+
+                    builder.with(matcher.group(1), matcher.group(2), matcher.group(3), matcher.group(4),
+                            matcher.group(5), matcher.group(6));
+                }
+            }
+
+            Page<User> users = userRepository.findAll(Objects.requireNonNull(builder.build()), pageable);
+
+            return convertToPageResponse(users, pageable);
+
+        }
+
+        return convertToPageResponse(userRepository.findAll(pageable), pageable);
+    }
+
     private User getUserById(long userId) {
         return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("user not found!"));
     }
@@ -207,6 +240,29 @@ public class UserServiceImpl implements UserService {
                 .addressType(a.getAddressType())
                 .build()));
         return result;
+    }
+
+    /**
+     * Convert Page<User> to PageResponse
+     *
+     * @param users
+     * @param pageable
+     * @return
+     */
+    private PageResponse<?> convertToPageResponse(Page<User> users, Pageable pageable) {
+        List<UserDetailResponse> response = users.stream().map(user -> UserDetailResponse.builder()
+                .id(user.getId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .build()).toList();
+        return PageResponse.builder()
+                .pageNo(pageable.getPageNumber())
+                .pageSize(pageable.getPageSize())
+                .totalPage(users.getTotalPages())
+                .items(response)
+                .build();
     }
 
 }

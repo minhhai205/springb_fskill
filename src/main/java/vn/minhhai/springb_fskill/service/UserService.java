@@ -1,5 +1,7 @@
 package vn.minhhai.springb_fskill.service;
 
+import org.springframework.data.domain.Pageable;
+
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.PageResponse;
 import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
@@ -23,4 +25,6 @@ public interface UserService {
 
     PageResponse<?> advanceSearchWithCriteria(int pageNo, int pageSize, String sortBy, String address,
             String... search);
+
+    PageResponse<?> advanceSearchWithSpecifications(Pageable pageable, String[] user, String[] address);
 }
