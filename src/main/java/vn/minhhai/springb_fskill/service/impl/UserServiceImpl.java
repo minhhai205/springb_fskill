@@ -197,8 +197,7 @@ public class UserServiceImpl implements UserService {
         log.info("getUsersBySpecifications");
 
         if (user != null && address != null) {
-            // return searchRepository.searchUserByCriteriaWithJoin(pageable, user,
-            // address);
+            return searchRepository.searchUserByCriteriaWithJoin(pageable, user, address);
         } else if (user != null) {
             UserSpecificationsBuilder builder = new UserSpecificationsBuilder();
 
