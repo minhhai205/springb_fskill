@@ -1,5 +1,6 @@
 package vn.minhhai.springb_fskill.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.minhhai.springb_fskill.dto.request.AddressDTO;
@@ -26,6 +28,7 @@ import vn.minhhai.springb_fskill.model.User;
 import vn.minhhai.springb_fskill.repository.SearchRepository;
 import vn.minhhai.springb_fskill.repository.UserRepository;
 import vn.minhhai.springb_fskill.repository.specification.UserSpecificationsBuilder;
+import vn.minhhai.springb_fskill.service.MailService;
 import vn.minhhai.springb_fskill.service.UserService;
 import vn.minhhai.springb_fskill.util.UserStatus;
 import vn.minhhai.springb_fskill.util.UserType;
@@ -36,6 +39,7 @@ import vn.minhhai.springb_fskill.util.UserType;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final SearchRepository searchRepository;
+    private final MailService mailService;
 
     /**
      * Save new user to DB
@@ -72,6 +76,15 @@ public class UserServiceImpl implements UserService {
                 .addressType(a.getAddressType())
                 .build()));
         userRepository.save(user);
+
+        if (user.getId() != null) {
+            // Nên ném ra ngoại lệ, không nên bắt ngoại lệ ở đây
+            try {
+                mailService.sendConfirmLink(user.getEmail(), user.getId(), "key");
+            } catch (UnsupportedEncodingException | MessagingException e) {
+                log.info("Failed to send confirmation email");
+            }
+        }
 
         log.info("User has added successfully, userId={}", user.getId());
 
