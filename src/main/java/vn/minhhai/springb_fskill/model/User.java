@@ -22,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_user")
-public class User extends AbstractEntity {
+public class User extends AbstractEntity<Long> {
 
     @Column(name = "first_name")
     private String firstName;
@@ -63,7 +63,16 @@ public class User extends AbstractEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "user")
     @JsonIgnore // Stop infinite loop
+    @Builder.Default
     private Set<Address> addresses = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private Set<GroupHasUser> groups = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    @Builder.Default
+    private Set<UserHasRole> roles = new HashSet<>();
 
     public void saveAddress(Address address) {
         if (address != null) {

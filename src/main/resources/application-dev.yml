@@ -16,7 +16,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
+      #    Giá trị	                         Mô tả
+      #     none                Không tự động tạo / cập nhật schema (cần tạo schema thủ công).
+      #    update	              Cập nhật schema nhưng không xóa dữ liệu.
+      #    create               Tạo lại toàn bộ schema mỗi lần chạy (xóa sạch dữ liệu cũ).
+      #  create-drop	          Tạo schema khi app chạy & xóa khi app dừng.
+      #   validate	            Kiểm tra schema, nhưng không tự động sửa.
 open:
   api:
     title: API document
