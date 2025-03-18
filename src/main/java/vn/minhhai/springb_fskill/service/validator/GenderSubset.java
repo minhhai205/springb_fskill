@@ -1,7 +1,8 @@
-package vn.minhhai.springb_fskill.util;
+package vn.minhhai.springb_fskill.service.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
+import vn.minhhai.springb_fskill.util.Gender;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;

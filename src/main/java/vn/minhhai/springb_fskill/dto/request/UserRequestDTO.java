@@ -12,11 +12,11 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import vn.minhhai.springb_fskill.util.EnumPattern;
-import vn.minhhai.springb_fskill.util.EnumValue;
+import vn.minhhai.springb_fskill.service.validator.EnumPattern;
+import vn.minhhai.springb_fskill.service.validator.EnumValue;
+import vn.minhhai.springb_fskill.service.validator.GenderSubset;
+import vn.minhhai.springb_fskill.service.validator.PhoneNumber;
 import vn.minhhai.springb_fskill.util.Gender;
-import vn.minhhai.springb_fskill.util.GenderSubset;
-import vn.minhhai.springb_fskill.util.PhoneNumber;
 import vn.minhhai.springb_fskill.util.UserStatus;
 import vn.minhhai.springb_fskill.util.UserType;
 

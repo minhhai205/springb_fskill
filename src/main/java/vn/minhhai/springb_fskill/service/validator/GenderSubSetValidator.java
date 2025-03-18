@@ -1,7 +1,8 @@
-package vn.minhhai.springb_fskill.util;
+package vn.minhhai.springb_fskill.service.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
+import vn.minhhai.springb_fskill.util.Gender;
 
 import java.util.Arrays;
 

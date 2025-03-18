@@ -2,8 +2,6 @@ package vn.minhhai.springb_fskill.repository.specification;
 
 import static vn.minhhai.springb_fskill.repository.specification.SearchOperation.*;
 
-import org.springframework.util.StringUtils;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

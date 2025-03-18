@@ -1,4 +1,4 @@
-package vn.minhhai.springb_fskill.dto.response.criteria;
+package vn.minhhai.springb_fskill.repository.criteria;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Predicate;

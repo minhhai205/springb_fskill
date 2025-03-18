@@ -18,10 +18,10 @@ import jakarta.persistence.Query;
 import jakarta.persistence.criteria.*;
 import lombok.extern.slf4j.Slf4j;
 import vn.minhhai.springb_fskill.dto.response.PageResponse;
-import vn.minhhai.springb_fskill.dto.response.criteria.SearchCriteria;
-import vn.minhhai.springb_fskill.dto.response.criteria.SearchQueryCriteriaConsumer;
 import vn.minhhai.springb_fskill.model.Address;
 import vn.minhhai.springb_fskill.model.User;
+import vn.minhhai.springb_fskill.repository.criteria.SearchCriteria;
+import vn.minhhai.springb_fskill.repository.criteria.SearchQueryCriteriaConsumer;
 import vn.minhhai.springb_fskill.repository.specification.SpecSearchCriteria;
 
 @Repository

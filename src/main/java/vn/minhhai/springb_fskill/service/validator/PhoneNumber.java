@@ -1,4 +1,4 @@
-package vn.minhhai.springb_fskill.util;
+package vn.minhhai.springb_fskill.service.validator;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,16 +10,11 @@ import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
 @Documented
+@Constraint(validatedBy = PhoneValidator.class)
+@Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR,
-        ElementType.PARAMETER, ElementType.TYPE_USE })
-@Constraint(validatedBy = EnumPatternValidator.class)
-public @interface EnumPattern {
-    String name();
-
-    String regexp();
-
-    String message() default "{name} must match {regexp}";
+public @interface PhoneNumber {
+    String message() default "Invalid phone number";
 
     Class<?>[] groups() default {};
 
