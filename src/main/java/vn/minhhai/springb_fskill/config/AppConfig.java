@@ -26,7 +26,9 @@ import vn.minhhai.springb_fskill.service.UserService;
 @RequiredArgsConstructor
 @Profile("!prod") // Chạy nếu profile KHÔNG phải "prod"
 public class AppConfig {
-    private final UserService userService;
+    private final UserService userService;// Chú ý nếu trong UserService lại khai báo BCryptPasswordEncoder để mã hóa
+                                          // mật khẩu khi lưu user vào database sẽ tạo vòng lặp bean, tìm giải pháp
+                                          // thích hợp để mã hóa mật khẩu hoạc khai báo userDetailsService
     private final PreFilter preFilter;
 
     private String[] WHITE_LIST = { "/auth/**" };
@@ -37,7 +39,7 @@ public class AppConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("**") // Cho phép tất cả đường dẫn
-                        .allowedOrigins("http://localhost:8500") // Chỉ cho phép frontend từ domain này gọi APIAPI
+                        .allowedOrigins("http://localhost:8500") // Chỉ cho phép frontend từ domain này gọi API
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH") // Các phương thức HTTP được phép
                         .allowedHeaders("*") // Allowed request headers
                         .allowCredentials(false)
@@ -59,6 +61,8 @@ public class AppConfig {
     @Bean
     public SecurityFilterChain configure(@NonNull HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable) // Tìm hiểu về csrf(AbstractHttpConfigurer::disable) ???
+                // Dùng RestAPI jwt nên không cần
+                // disable sẽ ẩn giao diện đòi login
 
                 // requestMatchers cho phép các API được quyền truy cập khi chưa xác thực
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests.requestMatchers(WHITE_LIST).permitAll()
