@@ -8,11 +8,15 @@ import vn.minhhai.springb_fskill.util.UserType;
 
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -22,7 +26,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "tbl_user")
-public class User extends AbstractEntity<Long> {
+public class User extends AbstractEntity<Long> implements UserDetails {
 
     @Column(name = "first_name")
     private String firstName;
@@ -83,5 +87,49 @@ public class User extends AbstractEntity<Long> {
             address.setUser(this); // save user_id
             // System.out.println(this.getId());
         }
+    }
+
+    /**
+     * Trả về danh sách quyền (roles) của người dùng.
+     */
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of();
+    }
+
+    /**
+     * Kiểm tra xem tài khoản có hết hạn không.
+     * Nếu trả về true, tài khoản vẫn còn hạn sử dụng.
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    /**
+     * Kiểm tra xem tài khoản có bị khóa không.
+     * Nếu trả về true, tài khoản không bị khóa.
+     */
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    /**
+     * Kiểm tra xem thông tin đăng nhập (mật khẩu) có hết hạn không.
+     * Nếu trả về true, mật khẩu vẫn còn hiệu lực.
+     */
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    /**
+     * Kiểm tra xem tài khoản có đang hoạt động không.
+     * Nếu trả về true, tài khoản được kích hoạt.
+     */
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }

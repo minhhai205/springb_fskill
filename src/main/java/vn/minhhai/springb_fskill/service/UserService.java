@@ -1,6 +1,7 @@
 package vn.minhhai.springb_fskill.service;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import vn.minhhai.springb_fskill.dto.request.UserRequestDTO;
 import vn.minhhai.springb_fskill.dto.response.PageResponse;
@@ -8,6 +9,7 @@ import vn.minhhai.springb_fskill.dto.response.UserDetailResponse;
 import vn.minhhai.springb_fskill.util.UserStatus;
 
 public interface UserService {
+    UserDetailsService userDetailsService();
 
     long saveUser(UserRequestDTO request);
 
