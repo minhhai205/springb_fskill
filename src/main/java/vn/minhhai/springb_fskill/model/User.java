@@ -89,6 +89,7 @@ public class User extends AbstractEntity<Long> implements UserDetails {
         }
     }
 
+    // Cần phải tự code login để tự kiểm tra logic trong 5 hàm sau
     /**
      * Trả về danh sách quyền (roles) của người dùng.
      */
@@ -112,6 +113,7 @@ public class User extends AbstractEntity<Long> implements UserDetails {
      */
     @Override
     public boolean isAccountNonLocked() {
+        // return UserStatus.ACTIVE.equals(status);
         return true;
     }
 
