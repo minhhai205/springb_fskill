@@ -4,11 +4,13 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -58,6 +60,33 @@ public class JwtServiceImpl implements JwtService {
             return Keys.hmacShaKeyFor(Decoders.BASE64.decode(accessKey));
         else
             return Keys.hmacShaKeyFor(Decoders.BASE64.decode(refreshKey));
+    }
+
+    /**
+     * Trả về giá trị hợp lệ nếu username của userDetails trùng với username được
+     * tách ra từ token
+     */
+    @Override
+    public boolean isValid(String token, TokenType tokenType, UserDetails userDetails) {
+        final String username = extractUsername(token, tokenType);
+        return username.equals(userDetails.getUsername());
+    }
+
+    /**
+     * Extract username từ token và trả về username
+     */
+    @Override
+    public String extractUsername(String token, TokenType tokenType) {
+        return extractClaim(token, tokenType, Claims::getSubject);
+    }
+
+    private <T> T extractClaim(String token, TokenType type, Function<Claims, T> claimResolver) {
+        final Claims claims = extraAllClaim(token, type);
+        return claimResolver.apply(claims);
+    }
+
+    private Claims extraAllClaim(String token, TokenType type) {
+        return Jwts.parserBuilder().setSigningKey(getKey(type)).build().parseClaimsJws(token).getBody();
     }
 
 }
