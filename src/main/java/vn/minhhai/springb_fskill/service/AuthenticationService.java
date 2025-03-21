@@ -31,7 +31,7 @@ public class AuthenticationService {
         String accessToken = jwtService.generateToken(user);
 
         // create new refresh token
-        String refreshToken = "TOKEN";
+        String refreshToken = jwtService.generateRefreshToken(user);
 
         return TokenResponse.builder()
                 .accessToken(accessToken)

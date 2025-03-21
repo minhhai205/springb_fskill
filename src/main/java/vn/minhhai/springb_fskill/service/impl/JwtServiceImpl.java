@@ -38,6 +38,11 @@ public class JwtServiceImpl implements JwtService {
         return generateToken(new HashMap<>(), user);
     }
 
+    @Override
+    public String generateRefreshToken(UserDetails user) {
+        return generateRefreshToken(new HashMap<>(), user);
+    }
+
     private String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         return Jwts.builder()
                 .setClaims(claims) // Đặt thông tin bổ sung vào token
@@ -47,6 +52,16 @@ public class JwtServiceImpl implements JwtService {
                 .signWith(getKey(TokenType.ACCESS_TOKEN), SignatureAlgorithm.HS256) // Ký token bằng khóa bí mật và
                                                                                     // thuật toán HS256
                 .compact(); // Chuyển đổi thành chuỗi JWT hoàn chỉnh
+    }
+
+    private String generateRefreshToken(Map<String, Object> claims, UserDetails userDetails) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24 * expiryDay))
+                .signWith(getKey(TokenType.REFRESH_TOKEN), SignatureAlgorithm.HS256)
+                .compact();
     }
 
     /**
