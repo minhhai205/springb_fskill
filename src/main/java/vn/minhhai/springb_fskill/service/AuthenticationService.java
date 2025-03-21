@@ -15,6 +15,7 @@ import vn.minhhai.springb_fskill.dto.response.TokenResponse;
 public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
+    private final JwtService jwtService;
 
     public TokenResponse authenticate(SignInRequest signInRequest) {
         log.info("---------- authenticate ----------");
@@ -27,7 +28,7 @@ public class AuthenticationService {
                 signInRequest.getPassword()));
 
         // create new access token
-        String accessToken = "TOKEN";
+        String accessToken = jwtService.generateToken(user);
 
         // create new refresh token
         String refreshToken = "TOKEN";
