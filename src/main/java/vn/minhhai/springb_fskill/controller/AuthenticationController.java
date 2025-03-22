@@ -1,6 +1,7 @@
 package vn.minhhai.springb_fskill.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import vn.minhhai.springb_fskill.dto.request.SignInRequest;
@@ -26,6 +27,15 @@ public class AuthenticationController {
     @PostMapping("/access")
     public ResponseEntity<TokenResponse> login(@RequestBody SignInRequest request) {
         return new ResponseEntity<>(authenticationService.authenticate(request), OK);
+    }
+
+    /**
+     * Có thể truyền refresh token qua '@RequestBody SignInRequest request'
+     * như trên nhưng truyền qua header sẽ chuẩn hơn
+     */
+    @PostMapping("/refresh")
+    public ResponseEntity<TokenResponse> refresh(HttpServletRequest request) {
+        return new ResponseEntity<>(authenticationService.refreshToken(request), OK);
     }
 
 }

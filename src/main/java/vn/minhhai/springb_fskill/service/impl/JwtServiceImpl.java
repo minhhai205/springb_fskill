@@ -84,7 +84,7 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public boolean isValid(String token, TokenType tokenType, UserDetails userDetails) {
         final String username = extractUsername(token, tokenType);
-        return username.equals(userDetails.getUsername());
+        return username.equals(userDetails.getUsername()) && !isTokenExpired(token, tokenType);
     }
 
     /**
@@ -93,6 +93,14 @@ public class JwtServiceImpl implements JwtService {
     @Override
     public String extractUsername(String token, TokenType tokenType) {
         return extractClaim(token, tokenType, Claims::getSubject);
+    }
+
+    private boolean isTokenExpired(String token, TokenType type) {
+        return extractExpiration(token, type).before(new Date());
+    }
+
+    private Date extractExpiration(String token, TokenType type) {
+        return extractClaim(token, type, Claims::getExpiration);
     }
 
     private <T> T extractClaim(String token, TokenType type, Function<Claims, T> claimResolver) {
