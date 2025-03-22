@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import vn.minhhai.springb_fskill.dto.request.SignInRequest;
 import vn.minhhai.springb_fskill.dto.response.TokenResponse;
 import vn.minhhai.springb_fskill.exception.InvalidDataException;
+import vn.minhhai.springb_fskill.model.Token;
 
 import static org.springframework.http.HttpHeaders.REFERER;
 import static vn.minhhai.springb_fskill.util.TokenType.ACCESS_TOKEN;
@@ -23,6 +24,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserService userService;
     private final JwtService jwtService;
+    private final TokenService tokenService;
 
     public TokenResponse authenticate(SignInRequest signInRequest) {
         log.info("---------- authenticate ----------");
@@ -39,6 +41,10 @@ public class AuthenticationService {
 
         // create new refresh token
         String refreshToken = jwtService.generateRefreshToken(user);
+
+        // save token to db
+        tokenService.save(Token.builder().username(user.getUsername()).accessToken(accessToken)
+                .refreshToken(refreshToken).build());
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
@@ -71,6 +77,10 @@ public class AuthenticationService {
 
         // tạo access token mới để trả về
         String accessToken = jwtService.generateToken(user);
+
+        // save token to db
+        tokenService.save(Token.builder().username(user.getUsername()).accessToken(accessToken)
+                .refreshToken(refreshToken).build());
 
         return TokenResponse.builder()
                 .accessToken(accessToken)
