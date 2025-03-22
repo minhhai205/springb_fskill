@@ -1,6 +1,7 @@
 package vn.minhhai.springb_fskill.service;
 
 import org.springframework.stereotype.Service;
+import vn.minhhai.springb_fskill.exception.ResourceNotFoundException;
 import vn.minhhai.springb_fskill.model.Token;
 import vn.minhhai.springb_fskill.repository.TokenRepository;
 
@@ -8,6 +9,17 @@ import java.util.Optional;
 
 @Service
 public record TokenService(TokenRepository tokenRepository) {
+
+    /**
+     * Get token by username
+     *
+     * @param username
+     * @return token
+     */
+    public Token getByUsername(String username) {
+        return tokenRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found token"));
+    }
 
     /**
      * Save token to DB
@@ -27,5 +39,15 @@ public record TokenService(TokenRepository tokenRepository) {
             tokenRepository.save(t);
             return t.getId();
         }
+    }
+
+    /**
+     * Delete token by username
+     *
+     * @param username
+     */
+    public void delete(String username) {
+        Token token = getByUsername(username);
+        tokenRepository.delete(token);
     }
 }

@@ -88,4 +88,19 @@ public class AuthenticationService {
                 .userId(user.getId())
                 .build();
     }
+
+    
+    public String logout(HttpServletRequest request) {
+        log.info("---------- logout ----------");
+
+        final String token = request.getHeader(REFERER);
+        if (StringUtils.isBlank(token)) {
+            throw new InvalidDataException("Token must be not blank");
+        }
+
+        final String userName = jwtService.extractUsername(token, ACCESS_TOKEN);
+        tokenService.delete(userName);
+
+        return "Deleted!";
+    }
 }
